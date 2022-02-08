@@ -1,6 +1,9 @@
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
-from TrackingSystem.serializers import UserSerializer, RegisterSerializer
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.permissions import IsAuthenticated
+from TrackingSystem.serializers import UserSerializer, RegisterSerializer, ProjectSerializer
+from TrackingSystem.models import Project
 
     
 class RegisterApi(GenericAPIView):
@@ -17,3 +20,26 @@ class RegisterApi(GenericAPIView):
                 "message": "User Created Successfully. Now perform Login to get your token",
             }
         )
+        
+
+class ProjectViewSet(ModelViewSet):
+    queryset = Project.objects.all()
+    serializer_class = ProjectSerializer
+    http_method_names = ["get", "post", "put", "delete"]
+    #permission_classes = (IsAuthenticated)
+
+
+    def create(self, request, *args, **kwargs):
+        request.POST._mutable = True
+        request.data["author"] = request.user.pk
+        request.POST._mutable = False
+        return super(ProjectViewSet, self).create(request, *args, **kwargs)
+
+    def get_queryset(self):
+        return Project.objects.all()
+    
+    def update(self, request, *args, **kwargs):
+        request.POST._mutable = True
+        request.data["author"] = request.user.pk
+        request.POST._mutable = False
+        return super(ProjectViewSet, self).update(request, *args, **kwargs)

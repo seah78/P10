@@ -3,14 +3,17 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib import admin
 from django.urls import path, include
 
-from TrackingSystem.views import RegisterApi
+from TrackingSystem.views import RegisterApi, ProjectViewSet, ContributorViewSet
 
-router = routers.SimpleRouter()
+projects_router = routers.SimpleRouter(trailing_slash=False)
+projects_router.register(r"projects/?", ProjectViewSet)
+users_router = routers.NestedSimpleRouter(projects_router, r"projects/?", lookup="projects", trailing_slash=False)
+users_router.register(r"users/?", ContributorViewSet, basename="users")
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api-auth/', include('rest_framework.urls')),
-    path('api/', include(router.urls)),
-    path('signup/', RegisterApi.as_view(), 'signup'),
+    path('', include(projects_router.urls)),
+    path('', include(users_router.urls)),
+    path('signup/', RegisterApi.as_view()),
     path('login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
 ]
