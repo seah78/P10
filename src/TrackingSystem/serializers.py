@@ -1,7 +1,7 @@
-from rest_framework.serializers import ModelSerializer
+from rest_framework import serializers
 from TrackingSystem.models import User
 
-class UserSerializer(ModelSerializer):
+class RegisterSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = User
@@ -15,3 +15,8 @@ class UserSerializer(ModelSerializer):
             last_name=validated_data["last_name"],
             email=validated_data["email"],
         )
+        
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ("id", "username", "first_name", "last_name", "email")

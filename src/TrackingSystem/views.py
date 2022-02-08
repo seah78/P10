@@ -1,12 +1,13 @@
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
-from TrackingSystem.serializers import UserSerializer
+from TrackingSystem.serializers import UserSerializer, RegisterSerializer
 
     
 class RegisterApi(GenericAPIView):
-    serializer_class = UserSerializer
+    
+    serializer_class = RegisterSerializer
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
