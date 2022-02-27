@@ -2,8 +2,8 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
-from TrackingSystem.serializers import UserSerializer, RegisterSerializer, ProjectSerializer
-from TrackingSystem.models import Project
+from TrackingSystem.serializers import ContributorsSerializer, UserSerializer, RegisterSerializer, ProjectSerializer
+from TrackingSystem.models import Contributors, Project
 
     
 class RegisterApi(GenericAPIView):
@@ -43,3 +43,15 @@ class ProjectViewSet(ModelViewSet):
         request.data["author"] = request.user.pk
         request.POST._mutable = False
         return super(ProjectViewSet, self).update(request, *args, **kwargs)
+    
+    
+class ContributorsViewSet(ModelViewSet):
+    
+    queryset = Contributors.objects.all()
+    serializer_class = ContributorsSerializer
+    http_method_names = ["get", "post", "put", "delete"]
+
+    def get_queryset(self):
+        return Contributors.objects.all()
+    
+    

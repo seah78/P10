@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from TrackingSystem.models import User, Project
+from TrackingSystem.models import Contributors, User, Project
 
 class RegisterSerializer(serializers.ModelSerializer):
     
@@ -26,3 +26,9 @@ class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
         fields = ("id", "title", "description", "project_type", "author")
+        
+        
+class ContributorsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Contributors
+        fields = ("id", "user", "project")

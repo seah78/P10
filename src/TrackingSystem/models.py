@@ -26,3 +26,16 @@ class Project(models.Model):
     description = models.CharField(max_length=550)
     project_type = models.CharField(max_length=8, choices=TYPE_CHOICES)
     author = models.ForeignKey(to=User, on_delete=models.CASCADE)
+    
+    
+class Contributors(models.Model):
+    CHOICES = (
+        ("AUTHOR", "Author"),
+        ("CONTRIBUTOR", "Contributor"),
+    )
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, related_name='contributors', on_delete=models.CASCADE)
+    permission = models.CharField(max_length=200, choices=CHOICES)
+    role = models.CharField(max_length=200)
+    
+    
