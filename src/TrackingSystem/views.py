@@ -2,8 +2,8 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
-from TrackingSystem.serializers import ContributorsSerializer, UserSerializer, RegisterSerializer, ProjectSerializer
-from TrackingSystem.models import Contributors, Project
+from TrackingSystem.serializers import ContributorsSerializer, IssuesSerializer, UserSerializer, RegisterSerializer, ProjectSerializer
+from TrackingSystem.models import Contributors, Issues, Project
 
     
 class RegisterApi(GenericAPIView):
@@ -55,3 +55,22 @@ class ContributorsViewSet(ModelViewSet):
         return Contributors.objects.all()
     
     
+class IssuesViewSet(ModelViewSet):
+    
+    queryset = Issues.objects.all()
+    serializer_class = IssuesSerializer
+    
+    def get_queryset(self):
+        projects = []
+        contributor_projects = Contributors.objects.filter(user = self.request.user.id)
+        for project in contributor_projects:
+            projects.append(project.project_id)
+        author_projects = Project.objects.filter(author = self.request.user.id)
+        for project in author_projects:
+            projects.append(project.id)
+        for project_id in projects:
+            if int(project_id) == int(self.kargs['project_pk']):
+                return Issues.objects.filter(project__in=self.kwargs['project_pk'])
+        return []
+            
+        

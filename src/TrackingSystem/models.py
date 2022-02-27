@@ -39,3 +39,18 @@ class Contributors(models.Model):
     role = models.CharField(max_length=200)
     
     
+class Issues(models.Model):
+    
+    title = models.CharField(max_length=160)
+    description = models.CharField(max_length=550)
+    tag = models.CharField(max_length=550)
+    priority = models.CharField(max_length=550)
+    project = models.ForeignKey(Project, related_name='issues', on_delete=models.CASCADE)
+    status= models.CharField(max_length=550)
+    author = models.ForeignKey(to=User, on_delete=models.CASCADE)
+    assigned_user = models.ForeignKey(User,
+                                      on_delete=models.CASCADE,
+                                      related_name='assigned_user')
+    created_time = models.DateTimeField(auto_now_add=True)
+    
+    
