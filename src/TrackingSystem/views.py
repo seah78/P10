@@ -39,9 +39,6 @@ class ProjectViewSet(ModelViewSet):
         return Project.objects.all()
     
     def update(self, request, *args, **kwargs):
-        request.POST._mutable = True
-        request.data["author"] = request.user.pk
-        request.POST._mutable = False
         return super(ProjectViewSet, self).update(request, *args, **kwargs)
     
     
@@ -50,27 +47,51 @@ class ContributorsViewSet(ModelViewSet):
     queryset = Contributors.objects.all()
     serializer_class = ContributorsSerializer
     http_method_names = ["get", "post", "put", "delete"]
+    
+    def create(self, request, *args, **kwargs):
+        request.POST._mutable = True
+        request.data["project"] = self.kwargs['projects_pk']
+        request.POST._mutable = False
+        return super(ContributorsViewSet, self).create(request, *args, **kwargs)
 
     def get_queryset(self):
-        return Contributors.objects.all()
+        return Contributors.objects.filter(project=self.kwargs['projects_pk'])
+    
+    def update(self, request, *args, **kwargs):
+        return super(ContributorsViewSet, self).update(request, *args, **kwargs)
     
     
 class IssuesViewSet(ModelViewSet):
     
     queryset = Issues.objects.all()
     serializer_class = IssuesSerializer
+    http_method_names = ["get", "post", "put", "delete"]
     
+    def create(self, request, *args, **kwargs):
+        request.POST._mutable = True
+        request.data["project"] = self.kwargs['projects_pk']
+        request.data["author"] = request.user.pk
+        request.data["assigned_user"] = request.user.pk
+
+        request.POST._mutable = False
+        return super(IssuesViewSet, self).create(request, *args, **kwargs)
+
     def get_queryset(self):
-        projects = []
-        contributor_projects = Contributors.objects.filter(user = self.request.user.id)
-        for project in contributor_projects:
-            projects.append(project.project_id)
-        author_projects = Project.objects.filter(author = self.request.user.id)
-        for project in author_projects:
-            projects.append(project.id)
-        for project_id in projects:
-            if int(project_id) == int(self.kargs['project_pk']):
-                return Issues.objects.filter(project__in=self.kwargs['project_pk'])
-        return []
-            
+        return Issues.objects.filter(project=self.kwargs['projects_pk'])
+    
+    def update(self, request, *args, **kwargs):
+        return super(IssuesViewSet, self).update(request, *args, **kwargs)
+    
+    
+"""    
+class CommentsViewSet
+
+description
+"""
         
+            
+"""
+Permissions
+
+
+"""        

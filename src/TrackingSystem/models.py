@@ -29,13 +29,9 @@ class Project(models.Model):
     
     
 class Contributors(models.Model):
-    CHOICES = (
-        ("AUTHOR", "Author"),
-        ("CONTRIBUTOR", "Contributor"),
-    )
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     project = models.ForeignKey(Project, related_name='contributors', on_delete=models.CASCADE)
-    permission = models.CharField(max_length=200, choices=CHOICES)
     role = models.CharField(max_length=200)
     
     
@@ -53,4 +49,7 @@ class Issues(models.Model):
                                       related_name='assigned_user')
     created_time = models.DateTimeField(auto_now_add=True)
     
+"""    
+class Comments():
     
+"""
