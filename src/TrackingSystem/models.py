@@ -49,7 +49,10 @@ class Issues(models.Model):
                                       related_name='assigned_user')
     created_time = models.DateTimeField(auto_now_add=True)
     
-"""    
-class Comments():
     
-"""
+class Comments(models.Model):
+
+    description = models.CharField(max_length=550)
+    author_user_id = models.ForeignKey(to=User, on_delete=models.CASCADE)
+    issue_id = models.ForeignKey(to=Issues, on_delete=models.CASCADE)
+    created_time = models.DateTimeField(auto_now_add=True)

@@ -2,8 +2,8 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
-from TrackingSystem.serializers import ContributorsSerializer, IssuesSerializer, UserSerializer, RegisterSerializer, ProjectSerializer
-from TrackingSystem.models import Contributors, Issues, Project
+from TrackingSystem.serializers import ContributorsSerializer, IssuesSerializer, UserSerializer, RegisterSerializer, ProjectSerializer, CommentsSerializer
+from TrackingSystem.models import Contributors, Issues, Project, Comments
 
     
 class RegisterApi(GenericAPIView):
@@ -83,11 +83,26 @@ class IssuesViewSet(ModelViewSet):
         return super(IssuesViewSet, self).update(request, *args, **kwargs)
     
     
-"""    
-class CommentsViewSet
+        
+class CommentsViewSet(ModelViewSet):
 
-description
-"""
+    queryset = Comments.objects.all()
+    serializer_class = CommentsSerializer
+    http_method_names = ["get", "post", "put", "delete"]
+
+    def create(self, request, *args, **kwargs):
+        request.POST._mutable = True
+        request.data["author_user_id"] = request.user.pk
+        request.data["issue_id"] = self.kwargs['issues_pk']
+
+        request.POST._mutable = False
+        return super(CommentsViewSet, self).create(request, *args, **kwargs)
+
+    def get_queryset(self):
+        return Comments.objects.filter(issue=self.kwargs['issues_pk'])
+    
+    def update(self, request, *args, **kwargs):
+        return super(CommentsViewSet, self).update(request, *args, **kwargs)
         
             
 """
