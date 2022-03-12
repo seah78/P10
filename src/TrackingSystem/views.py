@@ -111,7 +111,7 @@ class CommentsViewSet(ModelViewSet):
         return super(CommentsViewSet, self).create(request, *args, **kwargs)
 
     def get_queryset(self):
-        return Comments.objects.filter(issue=self.kwargs['issues_pk'])
+        return Comments.objects.filter(issue_id=self.kwargs['issues_pk'])
     
     def update(self, request, *args, **kwargs):
         request.POST._mutable = True

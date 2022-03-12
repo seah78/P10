@@ -53,7 +53,7 @@ class IsAuthorComment(BasePermission):
         except ObjectDoesNotExist:
             return True
 
-        return content.author_user == user
+        return content.author_user_id == user
 
 class IsContributorOrAuthorProjectInCommentView(IsContributor, IsAuthor, IsAuthorComment):
     def has_permission(self, request, view):
