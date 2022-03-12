@@ -3,16 +3,20 @@ from django.contrib.auth.models import AbstractUser
 
 
 class User(AbstractUser):
-
     """ 
-    
+    user model
     """
+    
     first_name = models.CharField(max_length=80)
     last_name = models.CharField(max_length=80)
     email = models.EmailField(max_length=255)
     
     
 class Project(models.Model):
+    """
+    project model
+    """
+    
     TYPE_BACKEND = "backend"
     TYPE_FRONTEND = "frontend"
     TYPE_IOS = "ios"
@@ -29,6 +33,9 @@ class Project(models.Model):
     
     
 class Contributors(models.Model):
+    """
+    contributor model
+    """
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     project = models.ForeignKey(Project, related_name='contributors', on_delete=models.CASCADE)
@@ -36,6 +43,9 @@ class Contributors(models.Model):
     
     
 class Issues(models.Model):
+    """
+    issue model
+    """
     
     title = models.CharField(max_length=160)
     description = models.CharField(max_length=550)

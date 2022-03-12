@@ -2,9 +2,10 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
+from TrackingSystem.permissions import IsContributorOrAuthorProjectInProjectView, IsContributorOrAuthorProjectInContributorView, IsContributorOrAuthorProjectInIssueView, IsContributorOrAuthorProjectInCommentView
 from TrackingSystem.serializers import ContributorsSerializer, IssuesSerializer, UserSerializer, RegisterSerializer, ProjectSerializer, CommentsSerializer
 from TrackingSystem.models import Contributors, Issues, Project, Comments
-
+from django.db.models import Q
     
 class RegisterApi(GenericAPIView):
     
@@ -26,7 +27,7 @@ class ProjectViewSet(ModelViewSet):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
     http_method_names = ["get", "post", "put", "delete"]
-    #permission_classes = (IsAuthenticated)
+    permission_classes = (IsAuthenticated, IsContributorOrAuthorProjectInProjectView)
 
 
     def create(self, request, *args, **kwargs):
@@ -36,7 +37,9 @@ class ProjectViewSet(ModelViewSet):
         return super(ProjectViewSet, self).create(request, *args, **kwargs)
 
     def get_queryset(self):
-        return Project.objects.all()
+        return Project.objects.filter(
+            Q(author=self.request.user.id) | Q(contributors__user=self.request.user.id)
+        )
     
     def update(self, request, *args, **kwargs):
         return super(ProjectViewSet, self).update(request, *args, **kwargs)
@@ -47,6 +50,7 @@ class ContributorsViewSet(ModelViewSet):
     queryset = Contributors.objects.all()
     serializer_class = ContributorsSerializer
     http_method_names = ["get", "post", "put", "delete"]
+    permission_classes = (IsAuthenticated, IsContributorOrAuthorProjectInContributorView)
     
     def create(self, request, *args, **kwargs):
         request.POST._mutable = True
@@ -66,6 +70,7 @@ class IssuesViewSet(ModelViewSet):
     queryset = Issues.objects.all()
     serializer_class = IssuesSerializer
     http_method_names = ["get", "post", "put", "delete"]
+    permission_classes = (IsAuthenticated, IsContributorOrAuthorProjectInIssueView)
     
     def create(self, request, *args, **kwargs):
         request.POST._mutable = True
@@ -80,6 +85,12 @@ class IssuesViewSet(ModelViewSet):
         return Issues.objects.filter(project=self.kwargs['projects_pk'])
     
     def update(self, request, *args, **kwargs):
+        request.POST._mutable = True
+        request.data["project"] = self.kwargs['projects_pk']
+        request.data["author"] = request.user.pk
+        request.data["assigned_user"] = request.user.pk
+        request.POST._mutable = False
+
         return super(IssuesViewSet, self).update(request, *args, **kwargs)
     
     
@@ -89,6 +100,7 @@ class CommentsViewSet(ModelViewSet):
     queryset = Comments.objects.all()
     serializer_class = CommentsSerializer
     http_method_names = ["get", "post", "put", "delete"]
+    permission_classes = (IsAuthenticated, IsContributorOrAuthorProjectInCommentView)
 
     def create(self, request, *args, **kwargs):
         request.POST._mutable = True
@@ -102,11 +114,10 @@ class CommentsViewSet(ModelViewSet):
         return Comments.objects.filter(issue=self.kwargs['issues_pk'])
     
     def update(self, request, *args, **kwargs):
+        request.POST._mutable = True
+        request.data["author_user_id"] = request.user.pk
+        request.data["issue_id"] = self.kwargs['issues_pk']
+        request.POST._mutable = False
         return super(CommentsViewSet, self).update(request, *args, **kwargs)
         
-            
-"""
-Permissions
-
-
-"""        
+    
