@@ -20,10 +20,12 @@ class Project(models.Model):
     TYPE_BACKEND = "backend"
     TYPE_FRONTEND = "frontend"
     TYPE_IOS = "ios"
+    TYPE_ANDROID = "android"
     TYPE_CHOICES = [
         (TYPE_BACKEND, "Back-end"),
         (TYPE_FRONTEND, "Front-end"),
         (TYPE_IOS, "iOS"),
+        (TYPE_ANDROID, "Android"),
     ]
 
     title = models.CharField(max_length=80)
