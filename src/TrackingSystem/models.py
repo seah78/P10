@@ -48,13 +48,42 @@ class Issues(models.Model):
     """
     issue model
     """
+        
+    PRIORITY_LOW = "low"
+    PRIORITY_MEDIUM = "medium"
+    PRIORITY_HIGH = "high"
+    PRIORITY_CHOICES = [
+        (PRIORITY_LOW, "Low"),
+        (PRIORITY_MEDIUM, "Medium"),
+        (PRIORITY_HIGH, "High"),    
+    ]
+
+    TAG_BUG = "bug"
+    TAG_IMPROVE = "improve"
+    TAG_TASK = "task"
+    TAG_CHOICES = [
+        (TAG_BUG, "Bug"),
+        (TAG_IMPROVE, "Improve"),
+        (TAG_TASK, "Task"),
+    ]
+    
+    STATUS_TODO = "to-do"
+    STATUS_INPROGRESS = "in-progress"
+    STATUS_COMPLETED = "completed"
+    STATUS_CHOICES = [
+        (STATUS_TODO, "To-Do"),
+        (STATUS_INPROGRESS, "In-Progress"),
+        (STATUS_COMPLETED, "Completed"),
+    ]
+    
+
     
     title = models.CharField(max_length=160)
     description = models.CharField(max_length=550)
-    tag = models.CharField(max_length=550)
-    priority = models.CharField(max_length=550)
+    tag = models.CharField(max_length=8, choices=TAG_CHOICES)
+    priority = models.CharField(max_length=8, choices=PRIORITY_CHOICES)
     project = models.ForeignKey(Project, related_name='issues', on_delete=models.CASCADE)
-    status= models.CharField(max_length=550)
+    status= models.CharField(max_length=15, choices=STATUS_CHOICES)
     author = models.ForeignKey(to=User, on_delete=models.CASCADE)
     assigned_user = models.ForeignKey(User,
                                       on_delete=models.CASCADE,
