@@ -15,11 +15,19 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Contributors',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('permission', models.CharField(choices=[('AUTHOR', 'Author'), ('CONTRIBUTOR', 'Contributor')], max_length=200)),
+                ('id', models.BigAutoField(auto_created=True,
+                                           primary_key=True,
+                                           serialize=False,
+                                           verbose_name='ID')),
+                ('permission', models.CharField(choices=[('AUTHOR', 'Author'),
+                                                         ('CONTRIBUTOR', 'Contributor')],
+                                                max_length=200)),
                 ('role', models.CharField(max_length=200)),
-                ('project', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='contributors', to='TrackingSystem.project')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                ('project', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                                              related_name='contributors',
+                                              to='TrackingSystem.project')),
+                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                                           to=settings.AUTH_USER_MODEL)),
             ],
         ),
     ]

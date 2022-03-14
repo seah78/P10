@@ -15,11 +15,17 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Project',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                                           primary_key=True,
+                                           serialize=False,
+                                           verbose_name='ID')),
                 ('title', models.CharField(max_length=80)),
                 ('description', models.CharField(max_length=550)),
-                ('project_type', models.CharField(choices=[('backend', 'Back-end'), ('frontend', 'Front-end'), ('ios', 'iOS')], max_length=8)),
-                ('author', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                ('project_type', models.CharField(choices=[('backend', 'Back-end'),
+                                                           ('frontend', 'Front-end'),
+                                                           ('ios', 'iOS')], max_length=8)),
+                ('author', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                                             to=settings.AUTH_USER_MODEL)),
             ],
         ),
     ]

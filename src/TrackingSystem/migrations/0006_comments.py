@@ -15,11 +15,16 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Comments',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                                           primary_key=True,
+                                           serialize=False,
+                                           verbose_name='ID')),
                 ('description', models.CharField(max_length=550)),
                 ('created_time', models.DateTimeField(auto_now_add=True)),
-                ('author_user_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
-                ('issue_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='TrackingSystem.issues')),
+                ('author_user_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                                                     to=settings.AUTH_USER_MODEL)),
+                ('issue_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                                               to='TrackingSystem.issues')),
             ],
         ),
     ]

@@ -1,7 +1,6 @@
 from rest_framework.permissions import BasePermission
-from django.core.exceptions import ObjectDoesNotExist 
+from django.core.exceptions import ObjectDoesNotExist
 from TrackingSystem import models
-
 
 
 class IsContributor(BasePermission):
@@ -12,6 +11,7 @@ class IsContributor(BasePermission):
             return False
 
         return True
+
 
 class IsAuthor(BasePermission):
     def is_author(self, pk, user):
@@ -24,28 +24,35 @@ class IsAuthor(BasePermission):
 
 
 class IsContributorOrAuthorProjectInProjectView(IsContributor, IsAuthor):
-
     def has_permission(self, request, view):
-        if view.kwargs.get("pk") == None:
+        if view.kwargs.get("pk") is None:
             return True
         if view.action == "create":
             return True
-        if view.action in ( "destroy", "update"):
+        if view.action in ("destroy", "update"):
             return self.is_author(view.kwargs["pk"], request.user)
-        return self.is_contributor(request.user, view.kwargs["pk"]) or self.is_author(view.kwargs["pk"], request.user)
-    
+        return self.is_contributor(request.user,
+                                   view.kwargs["pk"]) or self.is_author(
+            view.kwargs["pk"], request.user
+        )
+
+
 class IsContributorOrAuthorProjectInContributorView(IsContributor, IsAuthor):
     def has_permission(self, request, view):
         if view.action in ("create", "destroy", "update"):
             return self.is_author(view.kwargs["projects_pk"], request.user)
-        return self.is_contributor(request.user, view.kwargs["projects_pk"]) or self.is_author(view.kwargs["projects_pk"], request.user)
-    
+        return self.is_contributor(
+            request.user, view.kwargs["projects_pk"]
+        ) or self.is_author(view.kwargs["projects_pk"], request.user)
+
+
 class IsContributorOrAuthorProjectInIssueView(IsContributor, IsAuthor):
     def has_permission(self, request, view):
         if view.action in ("destroy", "update"):
             return self.is_author(view.kwargs["projects_pk"], request.user)
         return self.is_contributor(request.user, view.kwargs["projects_pk"])
-    
+
+
 class IsAuthorComment(BasePermission):
     def is_author_comment(self, pk, user):
         try:
@@ -55,12 +62,14 @@ class IsAuthorComment(BasePermission):
 
         return content.author_user_id == user
 
-class IsContributorOrAuthorProjectInCommentView(IsContributor, IsAuthor, IsAuthorComment):
+
+class IsContributorOrAuthorProjectInCommentView(
+    IsContributor, IsAuthor, IsAuthorComment
+):
     def has_permission(self, request, view):
-        
+
         if view.action in ("update"):
             return self.is_author_comment(view.kwargs["pk"], request.user)
-        return self.is_contributor(request.user, view.kwargs["projects_pk"]) or self.is_author(view.kwargs["projects_pk"], request.user)
-
-
-   
+        return self.is_contributor(
+            request.user, view.kwargs["projects_pk"]
+        ) or self.is_author(view.kwargs["projects_pk"], request.user)
